@@ -25,7 +25,7 @@ app.use(express.urlencoded({limit: "40kb", exptended: true}));
 
 const start = async () => {
     app.set("mongo_user");
-    const connectiondb= await mongoose.connect(process.env.ATLASDB_URL);
+    const connectiondb= await mongoose.connect(process.env.MONGODB_ATLAS_URL);
 
     console.log(`MONGO Connected DB Host: ${connectiondb.connection.host}`)
     server.listen(app.get("port"), () =>{
