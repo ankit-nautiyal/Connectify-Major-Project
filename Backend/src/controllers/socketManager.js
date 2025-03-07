@@ -20,7 +20,7 @@ export const connectToSocket = (server) =>{
         socket.on("join-call", (path) => {
 
             if(connections[path] === undefined) {
-                connections[path] = []        //If the path (room ID) doesn't exist yet, create an empty array for it.
+                connections[path] = []        //If the path (room ID) doesn't exist yet, initialize an empty array for it.
 
             }
             connections[path].push(socket.id); //Adds the user's socket.id to the connections[path] array
@@ -33,7 +33,7 @@ export const connectToSocket = (server) =>{
                 - socket.id: The ID of the new user.
                 - connections[path]: The list of all users in the room.*/
 
-            for(let a=0; a < connections[path].length; a++){                                            
+            for(let a= 0; a < connections[path].length; a++){                                            
                 io.to(connections[path][a]).emit("user-joined", socket.id, connections[path])
             }
 
@@ -43,7 +43,7 @@ export const connectToSocket = (server) =>{
             ✅ Effect: When a new user joins, they receive the full chat history so they are not lost.*/
 
             if (messages[path] !== undefined){
-                for (let a=0; a < messages[path].length; ++a){
+                for (let a= 0; a < messages[path].length; ++a){
                     io.to(socket.id).emit("chat-message", messages[path][a]['data'],
                         messages[path][a]['sender'], messages[path][a]['socket-id-sender'])
                     
@@ -52,7 +52,7 @@ export const connectToSocket = (server) =>{
 
         })
 
-        // *****#Summary of What Happens in Abv⬆️ Code Block:*****
+        // *****#Summary of the Abv⬆️ Code Block:*****
         // 1. User joins a call (room) by sending "join-call" with a path.
         // 2. If the room doesn't exist, create it.
         // 3. User is added to the room (connections[path]).
@@ -62,18 +62,16 @@ export const connectToSocket = (server) =>{
 
 
 
-        socket.on("chat-message", (data, sender) => {                 //Listens for the "chat-message" event, data: The message text, sender: The user who sent the message.
-            const [matchingRoom, found] = Object.entries(connections)   //Object.entries(connections): Gets all active rooms.
-                .reduce(([room, isFound], [roomKey, roomValue]) => {  //.reduce(): Loops through rooms to find where socket.id exists. If found → Stores the room name in matchingRoom.
-
-                    if(!isFound && roomValue.includes(socket.id)) {
-                        return [roomKey, true];
-                    }
-
-                    return [room, isFound];
-                }, ['', false]); //initialValue of [room, isFound]
-
-                //Alt for abv⬆️ code block from 'const' to 'false' instead of the reducer method:
+        socket.on("chat-message", (data, sender) => {   //Listens for the "chat-message" event, data: The message text, sender: The user who sent the message.
+                const matchingRoom = Object.entries(connections)  //Converts the connections object into an array of key-value pairs.
+                    .find(([roomKey, roomValue]) => roomValue.includes(socket.id));   //Loops through each room and checks if socket.id is present.
+            
+                if (matchingRoom) {
+                    const [roomKey] = matchingRoom;  // Extract the room name & store in matchingRoom
+                }
+        
+            
+                //Alt for abv⬆️ code block instead of the find() method:
                 // let matchingRoom = '';
                 // let found = false;
                 // for (const [roomKey, roomValue] of Object.entries(connections)) {
@@ -101,6 +99,14 @@ export const connectToSocket = (server) =>{
                     });
                 }
         })
+        /******#SUMMARY of the Abv⬆️ Code Block:*****
+                1. Listens for "chat-message" event with `data` (message) and `sender` (user).  
+                2. Finds the room to which the sender belongs to using `.find()` method on `connections`.   
+                3. Initializes messages array if `messages[matchingRoom]` is undefined.  
+                4. Stores the message in `messages[matchingRoom]` with sender info.  
+                5. Broadcasts the message to all users in the same room using `io.to().emit()`  */
+
+
 
 
         socket.on("disconnect", () =>{
@@ -109,7 +115,7 @@ export const connectToSocket = (server) =>{
             var key;
 
             for (const [k, v] of JSON.parse(JSON.stringify(Object.entries(connections)))){   //Object.entries(connections) converts it into an array of [roomID, userList] pairs.
-                                                                                            //This for loop goes through each room to check where the user (socket.id) is.
+                                                                                            //This for loop goes through each room to check where the user (socket.id) is, that disconnected
                 for (let a=0; a < v.length; ++a){
                     if (v[a] === socket.id) {
                         key=k;
@@ -119,7 +125,7 @@ export const connectToSocket = (server) =>{
                             io.to(connections[key][a]).emit('user-left', socket.id);
                         }
 
-                        //Find the user's position in connections[key] & remove it from the array
+                        //Find the user's position in connections[key] array & remove it 
                         var index= connections[key].indexOf(socket.id);
                         connections[key].splice(index, 1);
 
@@ -131,10 +137,9 @@ export const connectToSocket = (server) =>{
                 }
             }
         })
-
-        /* *****#Summary of What Happens in Abv⬆️ Code Block:*****
+        /* *****#SUMMARY of the Abv⬆️ Code Block:*****
             1. User disconnects ("disconnect" event triggers).
-            2. Calculate time spent online (diffTime).
+            2. Calculate time spent online by the user that disconnected (diffTime).
             3. Find the room where the user was.
             4. Notify all other users that the user left.
             5. Remove the user from the room list.
