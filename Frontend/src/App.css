@@ -1,3 +1,10 @@
+
+* {
+  font-family: "Smooch Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
 .landingPageContainer{
   width: 100vw;
   height: 100vh;
@@ -24,6 +31,19 @@
   display: flex;
   gap: 1.6rem;
   cursor: pointer;
+  font-size: 1.3rem;
+}
+
+
+.landingPageContainer nav div img{
+  height: 1.8rem;
+  width: 1.8rem;
+  margin-top: 0.3rem;
+  margin-right: 0.3rem;
+}
+
+.landingPageContainer nav div {
+  display: flex;
 }
 
 .landingMainContainer div h1{
@@ -51,7 +71,7 @@
   margin-top: 1.9rem;
 }
 
-.landingMainContainer > div:nth-child(1) div[role='button'] a{
+.landingMainContainer > div:nth-child(1) div[role='button'] a {
   text-decoration: none;
   color: white;
   font-size: 1.7rem;
@@ -65,5 +85,9 @@
   margin-right: 2rem;
 }
 
-
+footer{
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
 
