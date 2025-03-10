@@ -8,7 +8,6 @@ export default function LandingPage() {
             
                 <nav>
                     <div className='navHeader'>
-                        {/* <h2>Connectify</h2> */}
                         <img src="favicon.png" alt="logo" />
                         <h2>Connectify</h2>
                     </div>
@@ -30,7 +29,7 @@ export default function LandingPage() {
                         <p>Cover a distance by Connectify!</p>
 
                         <div role='button'>
-                            <Link to="/auth" >Get Started</Link>
+                            <Link to="/auth">Get Started link</Link>
                         </div>
                     </div>
 

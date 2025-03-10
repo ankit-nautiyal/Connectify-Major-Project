@@ -13,6 +13,8 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { AuthContext } from '../contexts/AuthContext';
+import { colors, Snackbar } from '@mui/material';
 
 
 
@@ -26,12 +28,38 @@ export default function Authentication() {
     const [password, setPassword] = React.useState();
     const [name, setName] = React.useState();
     const [error, setError] = React.useState();
-    const [messages, setMessages] = React.useState();
+    const [message, setMessage] = React.useState();
 
     const [formState, setFormState] = React.useState(0);
 
     const [open, setOpen] = React.useState(false);
+    const handleClose = () => {
+        setOpen(false);
+    };
 
+    const {handleRegister, handleLogin} = React.useContext(AuthContext);
+
+
+
+    let handleAuth= async () => {
+        try {
+            if(formState === 0){
+                let result = await handleLogin(username, password);
+            }
+            if (formState === 1) {
+                let result= await handleRegister(name, username, password);
+                setUsername("");
+                setMessage(result);
+                setOpen(true);
+                setError("");
+                setFormState(0);
+                setPassword("");
+            }
+        } catch (error) {
+            let message= (error.response.data.message);
+            setError(message);
+        }
+    }
 
 
     return (
@@ -76,7 +104,6 @@ export default function Authentication() {
                 </div>
 
                 <Box component="form" noValidate  sx={{ mt: 1 }}>
-                    <p>{name}</p>
                     {formState === 1 ?  <TextField
                         margin="normal"
                         required
@@ -84,6 +111,7 @@ export default function Authentication() {
                         id="Full Name"
                         label="Full Name"
                         name="Full Name"
+                        value={name}
                         autoFocus
                         onChange={(e)=>setName(e.target.value)}
                     /> : <></> }
@@ -95,6 +123,7 @@ export default function Authentication() {
                         id="username"
                         label="Username"
                         name="username"
+                        value={username}
                         autoFocus
                         onChange={(e)=>setUsername(e.target.value)}
                     />
@@ -107,24 +136,33 @@ export default function Authentication() {
                         label="Password"
                         type="password"
                         id="password"
+                        value={password}
                         onChange={(e)=>setPassword(e.target.value)}
                     />
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
-                    />
+
+                    <p style={{color: "red"}} > {error}</p>
                     <Button
                         type="button"
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
+                        onClick={handleAuth}
                     >
-                        Sign In
+                        {formState === 0 ? "Login" : "Register"}
                     </Button>
-                </Box>
+                </Box> 
             </Box>
             </Grid>
         </Grid>
+
+        <Snackbar
+            open= {open}
+            autoHideDuration= {4000}
+            message= {message} 
+            onClose={handleClose} 
+        />
+            
+
         </ThemeProvider>
     );
     }
