@@ -17,6 +17,7 @@ export const connectToSocket = (server) =>{
 
     io.on("connection", (socket) => {
 
+        console.log("SOMETHING CONNECTED!");
         socket.on("join-call", (path) => {
 
             if(connections[path] === undefined) {
@@ -88,7 +89,7 @@ export const connectToSocket = (server) =>{
                         messages[matchingRoom] = []        // Initialize if empty
                     }
 
-                    messages[matchingRoom].push({    //If the user is in a room, it saves the message. messages[matchingRoom] is an array of messages for that room.
+                    messages[matchingRoom].push({    //If the user is in a room, it saves the message in messages[matchingRoom], which is an array of messages for that room.
                         "sender": sender,
                         "data": data,
                         "socket-id-sender": socket.id,
