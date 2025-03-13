@@ -106,9 +106,77 @@ export default function VideoMeetComponent() {
     }, []);
 
 
-    //todo
-    let getUserMediaSuccess =(stream)=>{
+    let silentMic= () =>{
+        let ctx= new AudioContext();
+        let oscillator = ctx.createOscillator(); // to create a constant silent tone when mic is off
 
+        let dst= oscillator.connect(ctx.createMediaStreamDestination());
+
+        oscillator.start();
+        ctx.resume();
+        return Object.assign(dst.stream.getAudioTracks()[0], {enabled: false});
+    }
+
+    let blackScreen= ({width= 640, height = 480}= {}) =>{
+        let canvas= Object.assign(document.createElement("canvas"), {width, height });
+        
+        canvas.getContext('2d').fillRect(0, 0, width, height);
+        let stream= canvas.captureStream();
+        return Object.assign(stream.getVideoTracks()[0], {enabled: false});
+    }
+
+    
+    let getUserMediaSuccess =(stream)=>{
+        try {
+            window.localStream.getTracks().forEach(track => track.stop());
+        } catch (error) {
+            console.log(error);
+        } 
+
+        window.localStream= stream;
+        localVideoRef.current.srcObject= stream;
+
+        for (let id in connections){
+            if (id === socketIdRef.current) continue;
+
+            connections[id].addStream(window.localStream);
+
+            connections[id].createOffer().then((description)=>{
+                connections[id].setLocalDescription(description)
+                .then(() =>{
+                    socketIdRef.current.emit("signal", id, JSON.stringify({"sdp": connections[id].localDescription}))
+                }) 
+                .catch(e=> console.log(e))
+            })
+        } 
+
+        stream.getTracks().forEach(track => track.onended = () =>{
+            setVideo(false);
+            setAudio(false);
+
+            try {
+                let tracks = localVideoRef.current.srcObject.getTracks();
+                tracks.forEach(track => tableRowClasses.stop());
+            } catch (error) {
+                console.log(error);
+            }
+
+            let blackSilence= (...args) => new MediaStream([blackScreen(...args), silentMic()]); 
+            window.localStream= blackSilence();
+            localVideoRef.current.srcObject= window.localStream;
+
+            for(let id in connections) {
+                connections[id].addStream(window.localStream);
+                connections[id].createOffer().then((description)=>{
+                    connections[id].setLocalDescription(description)
+                        .then(()=>{
+                            socketIdRef.current.emit('signal', id, JSON.stringify({"sdp": connections[id].localDescription}))
+                        })
+                        .catch(e=> console.log(e)); 
+                })
+                
+            }
+        })
     }
 
     let getUserMedia= () =>{
@@ -124,17 +192,37 @@ export default function VideoMeetComponent() {
             } catch (error) {
                 console.log(e);
             }
-        }
+        } 
     }
+
     useEffect(() => {
         if (video !== undefined && audio !== undefined) {
             getUserMedia();
         }
     }, [audio, video])
     
-    //todo
-    let gotMessageFromServer= () =>{
+    
+    let gotMessageFromServer= (fromId, message) =>{
+        var signal= JSON.parse(message);
 
+        if (fromId !== socketIdRef.current) {
+            if (signal.sdp) {
+                connections[fromId].setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(()=>{
+                    if (signal.sdp.type === "offer") {
+                        
+                        connections[fromId].createAnswer().then((description)=>{
+                            connections[fromId].setLocalDescription(description).then(()=>{
+                                socketIdRef.current.emit("signal", fromId, JSON.stringify({"sdp": connections[fromId].localDescription}));
+                            }).catch(e=>console.log(e))
+                        }).catch(e=>console.log(e))
+                    }
+                }).catch(e=>console.log(e))
+            }
+
+            if (signal.ice) {
+                connections[fromId].addIceCandidate(new RTCIceCandidate(signal.ice)).catch(e=>console.log(e));
+            }
+        }
     }
 
     //todo
@@ -204,7 +292,9 @@ export default function VideoMeetComponent() {
                     if (window.localStream !== undefined && window.localStream !== null) {
                         connections[socketListId].addStream(window.localStream)
                     } else {
-                        //TODO BLACKSILENCE
+                        let blackSilence= (...args) => new MediaStream([blackScreen(...args), silentMic()]); 
+                        window.localStream= blackSilence();
+                        connections[socketListId].addStream(window.localStream);
                     }
                 });   
 
@@ -229,7 +319,6 @@ export default function VideoMeetComponent() {
                 }
             })
         }) 
-
     }
 
     let getMedia= ()=>{
@@ -258,7 +347,15 @@ export default function VideoMeetComponent() {
 
                 </div> 
                 
-                : <></>
+                : <>
+                    <video ref={localVideoRef} autoPlay muted></video>
+
+                    {videos.map((video) => (
+                        <div key={video.socketId}>
+
+                        </div>
+                    ))}
+                </>
                 
             }  
 
