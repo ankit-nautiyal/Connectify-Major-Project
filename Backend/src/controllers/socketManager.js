@@ -61,7 +61,9 @@ export const connectToSocket = (server) =>{
         // 5. All other users in the room get notified ("user-joined" event).
         // 6. If past messages exist, send them to the new user.
 
-
+        socket.on("signal", (toId, message) => {         //listening for a "signal" event emitted by a client along with sender's ID (socket.id) & actual msg
+            io.to(toId).emit("signal", socket.id, message);
+        })
 
         socket.on("chat-message", (data, sender) => {   //Listens for the "chat-message" event, data: The message text, sender: The user who sent the message.
                 const matchingRoom = Object.entries(connections)  //Converts the connections object into an array of key-value pairs.
