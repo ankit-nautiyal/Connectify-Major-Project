@@ -29,7 +29,7 @@ export default function LandingPage() {
                         <p>Cover a distance by Connectify!</p>
 
                         <div role='button'>
-                            <Link to="/auth">Get Started link</Link>
+                            <Link to="/auth">Get Started</Link>
                         </div>
                     </div>
 

@@ -55,7 +55,7 @@ export default function VideoMeetComponent() {
 
     const videoRef = useRef([]);
 
-    let [videos, setVideos] = useState([]);
+    let [videos, setVideos] = useState([]); // Array of remote video streams
 
     //TODO
     // if (isChrome) {
@@ -144,7 +144,7 @@ export default function VideoMeetComponent() {
             connections[id].createOffer().then((description)=>{
                 connections[id].setLocalDescription(description)
                 .then(() =>{
-                    socketIdRef.current.emit("signal", id, JSON.stringify({"sdp": connections[id].localDescription}))
+                    socketRef.current.emit("signal", id, JSON.stringify({"sdp": connections[id].localDescription}))
                 }) 
                 .catch(e=> console.log(e))
             })
@@ -212,7 +212,7 @@ export default function VideoMeetComponent() {
                         
                         connections[fromId].createAnswer().then((description)=>{
                             connections[fromId].setLocalDescription(description).then(()=>{
-                                socketIdRef.current.emit("signal", fromId, JSON.stringify({"sdp": connections[fromId].localDescription}));
+                                socketRef.current.emit("signal", fromId, JSON.stringify({"sdp": connections[fromId].localDescription}));
                             }).catch(e=>console.log(e))
                         }).catch(e=>console.log(e))
                     }
@@ -244,7 +244,7 @@ export default function VideoMeetComponent() {
             socketRef.current.on("chat-message", addMessage );
 
             socketRef.current.on("user-left", (id) => {
-                setVideo((videos)=> videos.filter((video)=>video.socketId !== id))
+                setVideos((videos)=> videos.filter((video)=>video.socketId !== id))
             })
 
             socketRef.current.on("user-joined", (id, clients)=> {
@@ -263,7 +263,7 @@ export default function VideoMeetComponent() {
                         let videoExists=  videoRef.current.find(video => video.socketId === socketListId);
 
                         if (videoExists) {
-                            setVideo(videos =>{
+                            setVideos(videos =>{
                                 const updatedVideos = videos.map(video =>
                                     video.socketId === socketListId ? {...video, stream: event.stream} : video
                                 );
@@ -352,7 +352,19 @@ export default function VideoMeetComponent() {
 
                     {videos.map((video) => (
                         <div key={video.socketId}>
+                            <h2>{video.socketId}</h2>
 
+                            <video 
+                                data-socket= {video.socketId}
+                                ref={ref => {
+                                    if (ref && video.stream) {
+                                        ref.srcObject= video.stream;
+                                    }
+                                }}
+                                autoPlay
+                            >
+
+                            </video>
                         </div>
                     ))}
                 </>
