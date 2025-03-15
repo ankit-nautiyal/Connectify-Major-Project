@@ -66,12 +66,18 @@ export const connectToSocket = (server) =>{
         })
 
         socket.on("chat-message", (data, sender) => {   //Listens for the "chat-message" event, data: The message text, sender: The user who sent the message.
-                const matchingRoom = Object.entries(connections)  //Converts the connections object into an array of key-value pairs.
-                    .find(([roomKey, roomValue]) => roomValue.includes(socket.id));   //Loops through each room and checks if socket.id is present.
-            
-                if (matchingRoom) {
-                    const [roomKey] = matchingRoom;  // Extract the room name & store in matchingRoom
-                }
+
+                const [matchingRoom, found] = Object.entries(connections) //Converts the connections object into an array of key-value pairs.
+                    .reduce(([room, isFound], [roomKey, roomValue]) => {    //Loops through each room and checks if socket.id is present.
+
+
+                    if (!isFound && roomValue.includes(socket.id)) {
+                        return [roomKey, true];
+                    }
+
+                    return [room, isFound];
+
+                }, ['', false]);
         
             
                 //Alt for abv⬆️ code block instead of the find() method:
@@ -84,6 +90,7 @@ export const connectToSocket = (server) =>{
                 //         break;  // Exit loop once found
                 //     }
                 // }
+                //or we can us ethe .find() method also
 
 
                 if(found === true) {
@@ -96,6 +103,7 @@ export const connectToSocket = (server) =>{
                         "data": data,
                         "socket-id-sender": socket.id,
                     })
+                    console.log("message", matchingRoom, ":", sender, data);
 
                     connections[matchingRoom].forEach((element) => {
                         io.to(element).emit("chat-message", data, sender, socket.id); //Sends the message to all users in the room.
