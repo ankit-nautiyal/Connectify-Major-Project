@@ -10,7 +10,9 @@ import MicIcon from '@mui/icons-material/Mic'
 import MicOffIcon from '@mui/icons-material/MicOff'
 import ScreenShareIcon from '@mui/icons-material/ScreenShare';
 import StopScreenShareIcon from '@mui/icons-material/StopScreenShare'
-import ChatIcon from '@mui/icons-material/Chat'
+import CommentIcon from '@mui/icons-material/Comment';
+import CommentsDisabledIcon from '@mui/icons-material/CommentsDisabled';
+import SendIcon from '@mui/icons-material/Send';
 // import server from '../environment';
 
 const server_url= "http://localhost:8000";
@@ -359,7 +361,7 @@ export default function VideoMeetComponent() {
                     .then(() => {
                         socketRef.current.emit('signal', id, JSON.stringify({ 'sdp': connections[id].localDescription }))
                     })
-                    .catch(e => console.log(e))
+                    .catch(e => console.log(e)) 
             })
         }
 
@@ -402,13 +404,17 @@ export default function VideoMeetComponent() {
         setScreen(!screen);
     }
 
+    let sendMessage = () =>{
+        
+    }
+
     return (
         <div>
             {askForUsername === true ? 
                 <div>
                     <h2>Enter into Lobby</h2>
-                    <TextField id="outlined-basic" label="Username" value={username} onChange={e => setUsername(e.target.value)  } variant="outlined" /> 
-                    <Button variant="contained" onClick={connect}>Connect</Button>
+                    <TextField id="outlined-basic" label="Username" value={username} onChange={e => setUsername(e.target.value)} variant="outlined" /> 
+                    <Button variant="contained" onClick={connect}>Connect </Button>
 
                     <div>
                         <video ref={localVideoRef} autoPlay muted></video>
@@ -417,6 +423,15 @@ export default function VideoMeetComponent() {
                 </div> 
                 
                 : <div className={styles.meetVideoContainer}>
+                    
+                    {showModal ? <div className={styles.chatRoom}>
+                        <h1>Chat</h1>
+
+                        <div className={styles.chatContainer}>
+                        <TextField id="outlined-basic" label="Enter your chat" variant="outlined" /> &nbsp;
+                        <Button variant='contained' onClick={sendMessage}>Send &nbsp; <SendIcon/></Button>
+                        </div>
+                    </div> : <></> }
 
                     <div className={styles.buttonContainers}>
                             <IconButton onClick={handleVideo} style={{color: 'white'}}>
@@ -437,9 +452,10 @@ export default function VideoMeetComponent() {
                                 </IconButton> : <></>
                             }
 
+
                             <Badge badgeContent={newMessages} max={999} color='secondary'>
-                                <IconButton style={{color:'white'}}>
-                                    <ChatIcon/>
+                                <IconButton onClick={() => setModal(!showModal)} style={{color:'white'}}>
+                                    { showModal === true ? <CommentIcon/> : <CommentsDisabledIcon/>}
                                 </IconButton>
                             </Badge> 
                     </div>
