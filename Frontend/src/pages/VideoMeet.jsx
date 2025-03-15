@@ -41,7 +41,7 @@ export default function VideoMeetComponent() {
 
     let [screen, setScreen] = useState();
 
-    let [showModal, setModal] = useState(true);
+    let [showModal, setModal] = useState(false);
 
     let [screenAvailable, setScreenAvailable] = useState();
 
@@ -343,13 +343,12 @@ export default function VideoMeetComponent() {
     } 
     
     let getDisplayMediaSuccess = (stream) => {
-        console.log("HERE")
         try {
-            window.localStream.getTracks().forEach(track => track.stop())
+            window.localStream.getTracks().forEach(track => track.stop());
         } catch (e) { console.log(e) }
 
-        window.localStream = stream
-        localVideoRef.current.srcObject = stream
+        window.localStream = stream;
+        localVideoRef.current.srcObject = stream;
 
         for (let id in connections) {
             if (id === socketIdRef.current) continue
@@ -369,7 +368,7 @@ export default function VideoMeetComponent() {
             setScreen(false)
 
             try {
-                let tracks = localVideoref.current.srcObject.getTracks()
+                let tracks = localVideoRef.current.srcObject.getTracks()
                 tracks.forEach(track => track.stop())
             } catch (e) { console.log(e) }
 
