@@ -13,6 +13,7 @@ import StopScreenShareIcon from '@mui/icons-material/StopScreenShare'
 import CommentIcon from '@mui/icons-material/Comment';
 import CommentsDisabledIcon from '@mui/icons-material/CommentsDisabled';
 import SendIcon from '@mui/icons-material/Send';
+import { useNavigate } from "react-router-dom";
 // import server from '../environment';
 
 const server_url= "http://localhost:8000";
@@ -49,11 +50,13 @@ export default function VideoMeetComponent() {
 
     let [message, setMessage] = useState("");
 
-    let [newMessages, setNewMessages] = useState(3);
+    let [newMessages, setNewMessages] = useState(0);
 
     let [askForUsername, setAskForUsername] = useState(true);
 
     let [username, setUsername] = useState("");
+
+    const [error, setError] = useState(false);
 
     const videoRef = useRef([]);
 
@@ -158,7 +161,7 @@ export default function VideoMeetComponent() {
 
             try {
                 let tracks = localVideoRef.current.srcObject.getTracks();
-                tracks.forEach(track => tableRowClasses.stop());
+                tracks.forEach(track => track.stop());
             } catch (error) {
                 console.log(error);
             }
@@ -227,9 +230,17 @@ export default function VideoMeetComponent() {
         }
     }
 
-    //todo
-    let addMessage= () =>{
 
+    let addMessage= (data, sender, socketIdSender) =>{
+
+        setMessages((prevMessages)=>[
+            ...prevMessages,
+            {sender: sender, data: data}
+        ])
+
+        if (socketIdSender !== socketIdRef.current) {
+            setNewMessages((prevMessages)=> prevMessages + 1)
+        }   
     }
 
     let connectToSocketServer = () => {
@@ -329,10 +340,7 @@ export default function VideoMeetComponent() {
         connectToSocketServer();
     }
 
-    let connect= () =>{
-        setAskForUsername(false);
-        getMedia();
-    }
+
 
     let handleVideo= ()=>{
         setVideo(!video);
@@ -404,19 +412,60 @@ export default function VideoMeetComponent() {
     }
 
     let sendMessage = () =>{
-        
+        socketRef.current.emit("chat-message", message, username);
+        setMessage("");
     }
+
+    let handleEndCall = () =>{
+        try {
+            let tracks= localVideoRef.current.srcObject.getTracks();
+            tracks.forEach(track => track.stop());
+        } catch (error) {
+            console.log(error)
+        }
+
+        routeTo("/home");
+    }
+
+    let routeTo= useNavigate();
+
+    let connect = () => {
+        if (!username.trim()) {  // Check for empty or spaces
+            setError(true);
+            return;  // Stop execution
+        }
+        
+        setError(false);
+        setAskForUsername(false);
+        getMedia();
+    };
+    
 
     return (
         <div>
             {askForUsername === true ? 
                 <div>
-                    <h2>Enter into Lobby</h2>
-                    <TextField id="outlined-basic" label="Username" value={username} onChange={e => setUsername(e.target.value)} variant="outlined" /> 
-                    <Button variant="contained" onClick={connect}>Connect </Button>
+                    <h2 style={{margin:"10px 20px 10px 20px"}}>Enter into Lobby</h2>
+                    
+                    <TextField 
+                        required 
+                        style={{margin:"10px 20px 10px 20px", borderRadius: "10px"}}
+                        id="outlined-basic" 
+                        label="Username" 
+                        value={username} 
+                        onChange={e => setUsername(e.target.value)} 
+                        variant="outlined"
+                        error={error}
+                        helperText={error ? "Username is required" : ""} 
+                    /> 
+                    <Button style={{marginTop:"18px"}} variant="contained" onClick={connect}>Connect </Button>
 
+                    <div className={styles.lobbyVcIcon}>
+                        <img src="/lobby-vc-icon.png" alt="" />
+                    </div>
+                    
                     <div>
-                        <video ref={localVideoRef} autoPlay muted></video>
+                        <video className={styles.lobbyPageVideo} ref={localVideoRef} autoPlay muted></video>
                     </div>
 
                 </div> 
@@ -424,21 +473,35 @@ export default function VideoMeetComponent() {
                 : <div className={styles.meetVideoContainer}>
                     
                     {showModal ? <div className={styles.chatRoom}>
-                        <h1>Chat</h1>
+                        
 
                         <div className={styles.chatContainer}>
-                        <TextField id="outlined-basic" label="Enter your chat" variant="outlined" /> &nbsp;
-                        <Button variant='contained' onClick={sendMessage}>Send &nbsp; <SendIcon/></Button>
+                            <h1>Chat</h1>
+
+                            <div className={styles.chattingDisplay}>
+                                { messages.length > 0 ? messages.map((item, index)=> {
+                                    return(
+                                        <div key={index} style={{marginBottom: "20px"}}>
+                                            <p style={{fontWeight:"bold"}}>{item.sender} </p>
+                                            <p>{item.data}</p>
+                                        </div>
+                                    )
+                                }) : <p>No messages yet</p>}
+                            </div>
+                            <div className={styles.chattingArea}>
+                                <TextField value={message} onChange={(e)=> setMessage(e.target.value)} id="outlined-basic" label="Enter your chat" variant="outlined" /> &nbsp;
+                                <Button variant='contained' onClick={sendMessage}>Send &nbsp; <SendIcon/></Button>
+                            </div>
                         </div>
-                    </div> : <></> }
+                    </div> : <></> } 
 
                     <div className={styles.buttonContainers}>
                             <IconButton onClick={handleVideo} style={{color: 'white'}}>
                                 {(video === true) ? <VideocamIcon/> : <VideocamOffIcon/>}
                             </IconButton>
 
-                            <IconButton style={{color: 'red '}}>
-                                <CallEndIcon/>
+                            <IconButton onClick={handleEndCall} style={{color: 'red '}}>
+                                <CallEndIcon  />
                             </IconButton>
 
                             <IconButton onClick={handleAudio } style={{color: 'white'}}>

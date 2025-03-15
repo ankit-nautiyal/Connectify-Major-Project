@@ -34,11 +34,12 @@
 
 }
 
-.conferenceView > video{
-    width: 25vw;
-    height: 12.5vh;
+.conferenceView  video{
+    display: flex;
+    width: 30vw;
+    /* height: 20vh;  */
     min-width: 20vw;
-    border-radius: 10px;
+    border-radius: 20px;
 }
 
 .chatRoom{
@@ -49,14 +50,37 @@
     background: white;
     border-radius: 10px;
     padding-inline: 20px;
+    margin-top: 10px;
+    margin-right: 10px;
 }
 
-.chatContainer{
-    position: absolute;
-    bottom: 0;
-    margin-bottom: 5px;
+.chatContainer {
+    position: relative;
+    height: 100%;
 }
 
 .chatContainer Button{
     margin-top: 9px;
 }
+
+.chattingArea {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 5px;
+}
+
+.lobbyPageVideo{
+    border-radius: 20px;
+    margin: 10px;
+    border: 3px solid black;
+}
+
+.lobbyVcIcon img{
+    width: 300px;
+    height: 300px;
+    margin: 50px;
+    margin-right: 200px;
+    position: absolute;
+    right: 0;
+}
+
