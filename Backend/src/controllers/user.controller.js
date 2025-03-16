@@ -2,6 +2,7 @@ import httpStatus from "http-status";
 import { User } from "../models/user.model.js";
 import bcrypt, {hash} from "bcrypt";
 import crypto from "crypto";
+import { Meeting } from "../models/meeting.model.js";
 
 const login = async (req, res) => {
     
@@ -52,11 +53,42 @@ const register = async (req, res) => {
 
         await newUser.save();
 
-        res.status(httpStatus.CREATED).json({ message: "User Registered" });
+        res.status(httpStatus.CREATED).json({ message: "User Registered"});
 
     } catch (error) {
         res.json({ message: `Something went wrong ${error}`});
     }
 }
 
-export {login, register}
+const getHistoryOfUser= async (req, res) => {
+    const {token} = req.query;
+
+    try {
+        const user= await User.findOne({token: token});
+        const meetings= await Meeting.find({userId: user.username});
+        res.json(meetings);
+    } catch (error) {
+        res.json({message: `Something went wrong ${error}`})
+    }
+}
+
+const addToUserHistory= async (req, res) => {
+    const {token, meetingCode}= req.body;
+
+    try {
+        const user= await User.findOne({token: token});
+
+        const newMeeting= new Meeting({
+            userId: user.username,
+            meetingCode: meetingCode
+        })
+
+        await newMeeting.save();
+
+        res.status(httpStatus.CREATED).json({message: "Added meeting code to history"})
+    } catch (error) {
+        res.json({message: `Something went wrong ${error}`})
+    }
+}
+
+export {login, register, getHistoryOfUser, addToUserHistory}

@@ -1,8 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 
-const meetingSchema = new Schema(
+const meetingSchema = new Schema( 
     {
-        userid: {type: String},
+        userId: {type: String},
         meetingCode: {type: String, required: true},
         date: {type: Date, default: Date.now, required: true},
     }
