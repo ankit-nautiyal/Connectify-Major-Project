@@ -461,7 +461,7 @@ export default function VideoMeetComponent() {
                     <Button style={{marginTop:"18px"}} variant="contained" onClick={connect}>Connect </Button>
 
                     <div className={styles.lobbyVcIcon}>
-                        <img src="/lobby-vc-icon.png" alt="" />
+                        <img srcSet="/lobby-vc-img.png" alt="lobby-vc-img" />
                     </div>
                     
                     <div>
