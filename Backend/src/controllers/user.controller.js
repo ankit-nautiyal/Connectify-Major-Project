@@ -9,7 +9,7 @@ const login = async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-        return res.status(400).json({message: "Please provide username/password"})
+        return res.status(400).json({message: "Please fill all the fields"})
     }
 
     try {
@@ -36,6 +36,10 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
     const { name, username, password } = req.body;
+
+    if (!name || !username || !password) {
+        return res.status(400).json({message: "Please fill all the fields"})
+    }
 
     try {
         const existingUser = await User.findOne({username});
