@@ -9,8 +9,8 @@ export default function LandingPage() {
     return (
         <div className={styles.landingPageContainer}>
             
-                <nav>
-                    <div className={styles.navHeader}>
+                <nav className={styles.navBar}>
+                    <div className={styles.navHeader} onClick={()=>routeTo("/")}>
                         <img src="favicon.png" alt="logo" />
                         <h2>Connectify</h2>
                     </div>
@@ -38,12 +38,12 @@ export default function LandingPage() {
                         <p>Cover a distance by Connectify!</p>
 
                         <div role='button'>
-                            <Link to="/auth">Get Started</Link>
+                            <Link to="/home">Get Started</Link>
                         </div>
                     </div>
 
                     <div>
-                        <img src="/mobile2.png" alt="mobile pic" />
+                        <img srcSet="/mobile2.png" alt="mobile pic" />
                     </div>
                 </div>
 

@@ -26,20 +26,18 @@ function HomeComponent() {
 
     return (
         <>
-            <div className={styles.navBar}>
+            <nav className={styles.navBar}>
 
-                <div style={{display: "flex", alignItems: "center" }}>
-
+                <div  onClick={()=>{navigate("/")}}>
                     <img src="favicon.png" alt="logo" />
                     <h2>Connectify</h2>
                 </div>
 
-                <div style={{display: "flex", alignItems: "center" }}>
-
+                <div>
                     <IconButton onClick={()=> { navigate("/history")}} >
                         <RestoreIcon/>
                     </IconButton>
-                    <p>History</p> &nbsp;
+                    <p onClick={()=> { navigate("/history")}} >History</p> &nbsp;
 
                     <Button onClick={()=>{
                         localStorage.removeItem("token")
@@ -48,7 +46,7 @@ function HomeComponent() {
                         Logout
                     </Button>
                 </div>
-            </div>
+            </nav>
 
             <div className={styles.meetContainer}>
                 <div className={styles.leftPanel}>

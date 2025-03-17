@@ -1,3 +1,5 @@
+
+
 .navBar{
     display: flex;
     align-items: center;
@@ -5,6 +7,9 @@
     padding-inline: 20px;
     text-align: center;
     margin-top: 20px;
+    z-index: 1;
+    position: absolute;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 .navBar img{
@@ -22,28 +27,17 @@
     font-size: 1.2rem;
 }
 
-.meetContainer{
-    display: flex;
-    padding-inline: 20px;
-    height: 80vh;
-    gap: 10vw;
-    justify-content: center;
-}
 
-.leftPanel {
-    height: 100%; 
-    display: flex;
-    align-items: center; 
-}
-
-.rightPanel {
-    display: flex;
-    align-items: center;
-}
-
-.rightPanel > img {
-    width: 30vw;
+.authBackground {
+    position: absolute;
+    margin: 200px 50px 50px 250px;
+    width: 25vw;
     height: auto;
-    border-radius: 20px;
+    z-index: 0; /* Push it behind content */
 }
 
+@media (max-width: 600px) {
+    .authBackground {
+        width: 12vw; 
+    }
+}

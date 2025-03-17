@@ -13,6 +13,7 @@ import StopScreenShareIcon from '@mui/icons-material/StopScreenShare'
 import CommentIcon from '@mui/icons-material/Comment';
 import CommentsDisabledIcon from '@mui/icons-material/CommentsDisabled';
 import SendIcon from '@mui/icons-material/Send';
+import RestoreIcon from '@mui/icons-material/Restore';
 import { useNavigate } from "react-router-dom";
 // import server from '../environment';
 
@@ -445,7 +446,34 @@ export default function VideoMeetComponent() {
         <div>
             {askForUsername === true ? 
                 <div>
-                    <h2 style={{margin:"10px 20px 10px 20px"}}>Enter into Lobby</h2>
+
+                    <nav className={styles.navBar}>
+
+                        <div onClick={()=>{routeTo("/")}}>
+                            <img src="favicon.png" alt="logo" />
+                            <h2>Connectify</h2>
+                        </div>
+
+                        <div>
+                            {(localStorage.getItem("token")) ? (
+                                <>
+                                    <IconButton onClick={()=> { routeTo("/history")}} >
+                                    <RestoreIcon/>
+                                    </IconButton>
+                                    <p onClick={()=> { routeTo("/history")}}>History</p> &nbsp;
+
+                                    <Button onClick={()=>{
+                                        localStorage.removeItem("token")
+                                        routeTo("/auth")
+                                    }}>
+                                        Logout
+                                    </Button> 
+                                </>
+                            ): <></>}
+                        </div>
+                    </nav>
+
+                    <h3 style={{margin:"50px 20px 0px 20px"}}>Enter into Lobby</h3>
                     
                     <TextField 
                         required 
@@ -458,10 +486,10 @@ export default function VideoMeetComponent() {
                         error={error}
                         helperText={error ? "Username is required" : ""} 
                     /> 
-                    <Button style={{marginTop:"18px"}} variant="contained" onClick={connect}>Connect </Button>
+                    <Button style={{margin:"18px"}} variant="contained" onClick={connect}>Connect </Button>
 
-                    <div className={styles.lobbyVcIcon}>
-                        <img srcSet="/lobby-vc-img.png" alt="lobby-vc-img" />
+                    <div className={styles.lobbyVcImg}>
+                        <img srcSet="/lobby-vc-img.png" alt="lobby img" />
                     </div>
                     
                     <div>
@@ -477,6 +505,7 @@ export default function VideoMeetComponent() {
 
                         <div className={styles.chatContainer}>
                             <h1>Chat</h1>
+                            <hr /> &nbsp;
 
                             <div className={styles.chattingDisplay}>
                                 { messages.length > 0 ? messages.map((item, index)=> {

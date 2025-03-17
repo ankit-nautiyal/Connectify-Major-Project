@@ -67,20 +67,52 @@
     position: absolute;
     bottom: 0;
     margin-bottom: 5px;
+
 }
 
+.chattingDisplay{
+    overflow-y: auto;
+    /* overflow-y: scroll; */
+}
 .lobbyPageVideo{
     border-radius: 20px;
     margin: 10px;
     border: 3px solid black;
+    width: 35vw;
+    height: auto;
 }
 
-.lobbyVcIcon img{
-    width: 300px;
-    height: 300px;
-    margin: 50px;
-    margin-right: 200px;
+.lobbyVcImg img{
+    width: 20vw;
+    margin: 150px 250px 50px 50px;
     position: absolute;
     right: 0;
+    height: auto;
 }
+
+
+.navBar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.navBar img{
+    height: 1.8rem;
+    width: 1.8rem;
+    margin-top: 0.3rem;
+    margin-right: 0.3rem;
+}
+
+.navBar div{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+
 

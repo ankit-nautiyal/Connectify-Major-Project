@@ -3,17 +3,15 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AuthContext } from '../contexts/AuthContext';
-import { colors, Snackbar } from '@mui/material';
+import { Snackbar } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import styles from "../styles/authentication.module.css";
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -31,12 +29,13 @@ export default function Authentication() {
     const [formState, setFormState] = React.useState(0);
 
     const [open, setOpen] = React.useState(false);
+    const navigate= useNavigate();
+
     const handleClose = () => {
         setOpen(false);
     };
 
     const {handleRegister, handleLogin} = React.useContext(AuthContext);
-
 
 
     let handleAuth= async () => {
@@ -62,6 +61,17 @@ export default function Authentication() {
 
     return (
         <ThemeProvider theme={defaultTheme}>
+            <img 
+                src="auth-pg-img.png" 
+                alt="Background" 
+                className={styles.authBackground}
+            />
+            <nav className={styles.navBar}>
+                <div  onClick={()=>{navigate("/")}}>
+                    <img src="favicon.png" alt="logo" />
+                    <h2>Connectify</h2>
+                </div>
+            </nav>
         <Grid container component="main" sx={{ height: '100vh' }}>
             <CssBaseline />
             <Grid
@@ -69,16 +79,12 @@ export default function Authentication() {
             xs={false}
             sm={4}
             md={7}
-            sx={{
-                backgroundImage: 'url(auth-pg-bg.svg)',
-                backgroundRepeat: 'no-repeat',
-                backgroundColor: (t) =>
-                t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-            }}
+
+
             />
-            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+
+        
+            <Grid style={{zIndex: '0'}} item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
             <Box
                 sx={{
                 my: 8,
@@ -163,4 +169,4 @@ export default function Authentication() {
 
         </ThemeProvider>
     );
-    }
+}
