@@ -24,6 +24,12 @@ function HomeComponent() {
         navigate(`/${meetingCode}`)
     }
 
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter") {
+            handleJoinVideoCall();
+        }
+    };
+
     return (
         <>
             <nav className={styles.navBar}>
@@ -63,7 +69,10 @@ function HomeComponent() {
                             id='outlined-basic'
                             required
                             error={error}
-                            helperText={error ? "Meeting Code is required" : ""}>
+                            helperText={error ? "Meeting Code is required" : ""}
+                            onKeyDown={handleKeyPress}
+                            >
+                            
                             </TextField>
 
                             <Button onClick={handleJoinVideoCall} variant='contained'>

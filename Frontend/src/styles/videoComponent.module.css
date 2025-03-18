@@ -5,14 +5,21 @@
     
 }
 
-.meetUserVideo{
-    position: absolute; 
-    bottom: 10vh;
+/* Styles for the self-user video (bottom-left) */
+.selfVideoWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    bottom: 10vh; /* Matches meetUserVideo’s original position */
+    left: 10px;
+}
+
+.meetUserVideo {
     height: 20vh;
     width: auto;
-    left: 0;
     border-radius: 20px;
-    margin-left: 10px;
+    margin: 0; /* Remove any default margins to fit neatly in wrapper */
 }
 
 .buttonContainers {
@@ -26,20 +33,42 @@
     font-size: 3rem;
 }
 
+/* Styles for the conference view (other users’ videos) */
 .conferenceView {
     display: flex;
+    flex-wrap: wrap; /* Allow wrapping if many users join */
     padding: 10px;
-    gap: 10px;
+    gap: 15px; /* Increased gap to account for usernames */
     border-radius: 10px;
-
+    justify-content: center; /* Center videos horizontally */
 }
 
-.conferenceView  video{
+.videoWrapper {
     display: flex;
-    width: 30vw;
-    /* height: 20vh;  */
+    flex-direction: column;
+    align-items: center;
+    max-width: 30vw; /* Limit width to prevent overlap */
+}
+
+.conferenceView video {
+    width: 100%; /* Fill the wrapper width */
+    max-width: 30vw; /* Consistent with original sizing */
     min-width: 20vw;
+    height: auto;
     border-radius: 20px;
+}
+
+/* Shared style for usernames below videos */
+.videoUsername {
+    color: white; /* White text for visibility on dark background */
+    font-size: 1rem; /* Readable size */
+    margin: 5px 0 0 0; /* Small top margin, no bottom margin */
+    text-align: center;
+    font-weight: 500; /* Slightly bold for clarity */
+    overflow: hidden; /* Prevent long names from breaking layout */
+    text-overflow: ellipsis; /* Truncate long names with "..." */
+    white-space: nowrap; /* Keep username on one line */
+    max-width: 100%; /* Match video width */
 }
 
 .chatRoom{
@@ -55,8 +84,10 @@
 }
 
 .chatContainer {
-    position: relative;
+    padding: 20px;
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .chatContainer Button{
@@ -67,13 +98,16 @@
     position: absolute;
     bottom: 0;
     margin-bottom: 5px;
-
+    margin-top: 10px;
 }
 
-.chattingDisplay{
-    overflow-y: auto;
-    /* overflow-y: scroll; */
+.chattingDisplay {
+    max-height: 67vh; /* Limits height to 60% of viewport height, adjust as needed */
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
 }
+
 .lobbyPageVideo{
     border-radius: 20px;
     margin: 10px;
@@ -115,4 +149,52 @@
     font-size: 1.2rem;
 }
 
+.messageWrapper {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.messageHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px; /*gap betwwn sender & timestamp*/
+}
+
+.senderName {
+    font-weight: bold;
+    margin: 0;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.messageContent {
+    margin: 5px 0 0 0;
+    word-wrap: break-word;
+}
+
+.selfMessage {
+    align-items: flex-end;
+}
+
+.otherMessage {
+    align-items: flex-start;
+}
+
+.selfMessage .messageContent {
+    background: #dcf8c6; /* Light green for self */
+    padding: 8px;
+    border-radius: 8px;
+    max-width: 80%; /* Limits width for better readability */
+}
+
+.otherMessage .messageContent {
+    background: #f1f0f0; /* Light gray for others */
+    padding: 8px;
+    border-radius: 8px;
+    max-width: 80%;
+}
 

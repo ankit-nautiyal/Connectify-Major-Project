@@ -58,6 +58,12 @@ export default function Authentication() {
         }
     }
 
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter") {
+            handleAuth();
+        }
+    };
+
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -142,6 +148,7 @@ export default function Authentication() {
                         id="password"
                         value={password}
                         onChange={(e)=>setPassword(e.target.value)}
+                        onKeyDown={handleKeyPress}
                     />
 
                     <p style={{color: "red"}} > {error}</p>
