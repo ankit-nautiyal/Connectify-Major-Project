@@ -1,8 +1,9 @@
 import { Server } from "socket.io";
 
-let connections = {}; //connections is an object that tracks which users are in which rooms.
-let messages = {};   //messages is an object that stores all messages
-let timeOnline = {};  //timeOnline is an object that stores total time a user was online before disconnecting
+let connections = {}; //object that tracks which users are in which rooms.
+let messages = {};   //object that stores all messages
+let timeOnline = {};  //object that stores total time a user was online before disconnecting
+let users = {};     //object to store socket.id -> username mappings
 
 
 export const connectToSocket = (server) =>{
@@ -18,14 +19,14 @@ export const connectToSocket = (server) =>{
     io.on("connection", (socket) => {
 
         console.log("SOMETHING CONNECTED!");
-        socket.on("join-call", (path) => {
+        socket.on("join-call", (path, username) => {
 
             if(connections[path] === undefined) {
                 connections[path] = []        //If the path (room ID) doesn't exist yet, initialize an empty array for it.
 
             }
             connections[path].push(socket.id); //Adds the user's socket.id to the connections[path] array
-
+            users[socket.id] = username; // Store the username
             timeOnline[socket.id] = new Date(); //Saves the current time when the user joins. new Date() creates a date object with the current date and time:
 
 
@@ -35,7 +36,7 @@ export const connectToSocket = (server) =>{
                 - connections[path]: The list of all users in the room.*/
 
             for(let a= 0; a < connections[path].length; a++){                                            
-                io.to(connections[path][a]).emit("user-joined", socket.id, connections[path])
+                io.to(connections[path][a]).emit("user-joined", socket.id, connections[path], users)
             }
 
 
@@ -143,7 +144,11 @@ export const connectToSocket = (server) =>{
                         //If no users are left in the room, delete it completely.
                         if (connections[key].length ===0) {
                             delete connections[key];
+                            delete messages[key]; // Clear messages when room is empty
+                            console.log(`Room ${key} is empty, messages cleared.`);
                         }
+                        delete users[socket.id]; // Clean up username on disconnect
+                        delete timeOnline[socket.id]; // Clean up timeOnline too
                     }
                 }
             }
