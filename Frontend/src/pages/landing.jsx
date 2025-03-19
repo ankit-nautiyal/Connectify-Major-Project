@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/landingPgComponent.module.css';
+import { Snackbar } from '@mui/material';
+
 
 export default function LandingPage() {
 
+    const [open, setOpen]= useState(false);
     const routeTo= useNavigate();
+
+    let handleLogout=()=>{
+        localStorage.removeItem('token')
+        setOpen(true);
+    }
     
     return (
         <div className={styles.landingPageContainer}>
@@ -16,6 +24,7 @@ export default function LandingPage() {
                     </div>
 
                     <div className={styles.navList}>
+                        
                         <p onClick={()=>{
                             routeTo("/guest")
                         }}>Join as Guest</p>
@@ -29,6 +38,8 @@ export default function LandingPage() {
                         }}>
                             <p>Login</p>
                         </div>
+
+                        {localStorage.getItem("token") ? <p onClick={handleLogout} id='logoutBtn'> Logout </p> : <></>}
                     </div>
                 </nav>
 
@@ -46,6 +57,13 @@ export default function LandingPage() {
                         <img srcSet="/mobile2.png" alt="mobile pic" />
                     </div>
                 </div>
+
+                <Snackbar
+                    open= {open}
+                    autoHideDuration= {4000}
+                    message= "Logged Out Successfully"
+                    onClose={()=> {setOpen(false)}} 
+                />
 
                 <footer >
                     <p>Made with ❤️ by Ankit Nautiyal</p>

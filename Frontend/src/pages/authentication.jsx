@@ -20,19 +20,22 @@ const defaultTheme = createTheme();
 
 export default function Authentication() {
 
-    const [username, setUsername] = React.useState();
-    const [password, setPassword] = React.useState();
-    const [name, setName] = React.useState();
-    const [error, setError] = React.useState();
-    const [message, setMessage] = React.useState();
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [name, setName] = React.useState('');
+    const [error, setError] = React.useState('');
+    const [message, setMessage] = React.useState('');
 
     const [formState, setFormState] = React.useState(0);
 
-    const [open, setOpen] = React.useState(false);
+    const [openLoginSnackbar, setOpenLoginSnackbar] = React.useState(false);
+    const [openRegisterSnackbar, setOpenRegisterSnackbar] = React.useState(false);
+
     const navigate= useNavigate();
 
     const handleClose = () => {
-        setOpen(false);
+        setOpenLoginSnackbar(false);
+        setOpenRegisterSnackbar(false);
     };
 
     const {handleRegister, handleLogin} = React.useContext(AuthContext);
@@ -41,19 +44,20 @@ export default function Authentication() {
     let handleAuth= async () => {
         try {
             if(formState === 0){
-                let result = await handleLogin(username, password);
+                setOpenLoginSnackbar(true);
+                await handleLogin(username, password);
             }
             if (formState === 1) {
                 let result= await handleRegister(name, username, password);
                 setUsername("");
                 setMessage(result);
-                setOpen(true);
+                setOpenRegisterSnackbar(true);
                 setError("");
                 setFormState(0);
                 setPassword("");
             }
         } catch (error) {
-            let message= (error.response.data.message);
+            let message= (error.response.data.message || "An error occurred");
             setError(message);
         }
     }
@@ -123,7 +127,7 @@ export default function Authentication() {
                         name="Full Name"
                         value={name}
                         autoFocus
-                        onChange={(e)=>setName(e.target.value)}
+                        onChange={(e)=>setName(e.target.value.trim())} // Trims whitespace
                     /> : <></> }
 
                     <TextField
@@ -135,7 +139,7 @@ export default function Authentication() {
                         name="username"
                         value={username}
                         autoFocus
-                        onChange={(e)=>setUsername(e.target.value)}
+                        onChange={(e)=>setUsername(e.target.value.replace(/\s/g, ""))}
                     />
 
                     <TextField
@@ -147,7 +151,7 @@ export default function Authentication() {
                         type="password"
                         id="password"
                         value={password}
-                        onChange={(e)=>setPassword(e.target.value)}
+                        onChange={(e)=>setPassword(e.target.value.trim())} // Trims whitespace
                         onKeyDown={handleKeyPress}
                     />
 
@@ -166,12 +170,21 @@ export default function Authentication() {
             </Grid>
         </Grid>
 
-        <Snackbar
-            open= {open}
-            autoHideDuration= {4000}
-            message= {message} 
-            onClose={handleClose} 
-        />
+            {/* Snackbar for Login Success */}
+            <Snackbar
+                open={openLoginSnackbar}
+                autoHideDuration={4000}
+                message="User Logged in Successfully"
+                onClose={handleClose}
+            />
+
+            {/* Snackbar for Register Success */}
+            <Snackbar
+                open={openRegisterSnackbar}
+                autoHideDuration={4000}
+                message="User Registered Successfully"
+                onClose={handleClose}
+            />
             
 
         </ThemeProvider>
