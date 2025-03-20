@@ -1,22 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
-import io from "socket.io-client";
-import { Badge, IconButton, TextField } from '@mui/material';
-import { Button } from '@mui/material';
-import VideocamIcon from '@mui/icons-material/Videocam';
-import VideocamOffIcon from '@mui/icons-material/VideocamOff'
-import styles from "../styles/videoComponent.module.css";
-import CallEndIcon from '@mui/icons-material/CallEnd'
-import MicIcon from '@mui/icons-material/Mic'
-import MicOffIcon from '@mui/icons-material/MicOff'
-import ScreenShareIcon from '@mui/icons-material/ScreenShare';
-import StopScreenShareIcon from '@mui/icons-material/StopScreenShare'
+import CallEndIcon from '@mui/icons-material/CallEnd';
 import CommentIcon from '@mui/icons-material/Comment';
 import CommentsDisabledIcon from '@mui/icons-material/CommentsDisabled';
-import SendIcon from '@mui/icons-material/Send';
+import MicIcon from '@mui/icons-material/Mic';
+import MicOffIcon from '@mui/icons-material/MicOff';
 import RestoreIcon from '@mui/icons-material/Restore';
+import ScreenShareIcon from '@mui/icons-material/ScreenShare';
+import SendIcon from '@mui/icons-material/Send';
+import StopScreenShareIcon from '@mui/icons-material/StopScreenShare';
+import VideocamIcon from '@mui/icons-material/Videocam';
+import VideocamOffIcon from '@mui/icons-material/VideocamOff';
+import { Badge, Button, IconButton, TextField } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Snackbar } from '@mui/material';
+import io from "socket.io-client";
 import server from '../environment';
+import styles from "../styles/videoComponent.module.css";
 
 const formatTimestamp = (date) => {
     return date.toLocaleTimeString("en-US", {

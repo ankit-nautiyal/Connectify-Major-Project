@@ -1,8 +1,8 @@
-let IS_PROD=  true;
+let IS_PROD =  import.meta.env.MODE === "production";
 
-const server = IS_PROD ?
-        "https://connectify-backend-9vrr.onrender.com" :
+const server = IS_PROD 
+        ? "https://connectify-backend-9vrr.onrender.com" 
 
-        "http://localhost:8000"
+        : import.meta.env.VITE_BACKEND_URL;
 
 export default server;
