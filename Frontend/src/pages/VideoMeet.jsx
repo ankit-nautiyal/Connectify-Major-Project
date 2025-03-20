@@ -16,7 +16,7 @@ import SendIcon from '@mui/icons-material/Send';
 import RestoreIcon from '@mui/icons-material/Restore';
 import { useNavigate } from "react-router-dom";
 import { Snackbar } from '@mui/material';
-import server from '../../environment';
+import server from '../environment';
 
 const formatTimestamp = (date) => {
     return date.toLocaleTimeString("en-US", {
