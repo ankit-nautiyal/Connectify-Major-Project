@@ -20,7 +20,6 @@
 - Crpto.js for Token Generation
 - MongoDB Atlas & MongoDB Compass for Database Management
 - Mongoose for MongoDB Object Modeling 
-- Cookie Parser for Parsing Cookies
 - Dotenv for Environment Variables
 - AuthGuard for Protecting Routes
 - Local Storage Tokens for Local Authentication
