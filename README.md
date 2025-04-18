@@ -3,7 +3,6 @@
 ## Developed 'Connectify' - A full-stack video conferencing web application leveraging  Express.js, Node.js, MongoDB, React.js, WebRTC, WebSockets & Socket.IO
 
 ***
-
 ### 🛠️Technologies & Packages Used:
 - React.js
 - Express.js
