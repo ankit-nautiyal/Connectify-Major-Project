@@ -16,7 +16,7 @@
 - React Router for Dynamic Routing
 - React Context API for State Management 
 - Bcrypt for Password Hashing
-- Crpto.js for Token Generation
+- Crypto.js for Token Generation
 - MongoDB Atlas & MongoDB Compass for Database Management
 - Mongoose for MongoDB Object Modeling 
 - Dotenv for Environment Variables
